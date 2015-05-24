@@ -1,11 +1,9 @@
 package com.ibu.libu.libu;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,32 +12,47 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.w3c.dom.Text;
 
-public class LoginActivity extends ActionBarActivity {
 
+public class UserActivity extends ActionBarActivity {
+
+    String name;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_user);
 
-        Button btnLogin = (Button)findViewById(R.id.btnLogin);
+        final TextView txtName = (TextView)findViewById(R.id.txtName);
+        final TextView txtId = (TextView)findViewById(R.id.txtId);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        Firebase.setAndroidContext(this);
+
+        Firebase fireUser = new Firebase("https://libu.firebaseio.com/");
+
+        fireUser.child("users").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, ListOfBooksActivity.class);
+            public void onDataChange(DataSnapshot snapshot) {
 
-                startActivity(intent);
+                name = snapshot.child("medinabandic").child("name").getValue().toString();
+                id = snapshot.child("medinabandic").child("id").getValue().toString();
+
+                txtName.setText(name);
+                txtId.setText(id);
             }
+            @Override public void onCancelled(FirebaseError error) { }
         });
+
+
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+        getMenuInflater().inflate(R.menu.menu_user, menu);
         return true;
     }
 
@@ -54,6 +67,8 @@ public class LoginActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }
