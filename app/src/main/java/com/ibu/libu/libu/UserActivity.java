@@ -29,6 +29,7 @@ public class UserActivity extends ActionBarActivity {
 
     String name;
     String id;
+    String auth;
 
     int resID;
 
@@ -44,6 +45,7 @@ public class UserActivity extends ActionBarActivity {
 
         final TextView txtName = (TextView)findViewById(R.id.txtName);
         final TextView txtId = (TextView)findViewById(R.id.txtId);
+        final TextView txtAuth = (TextView)findViewById(R.id.txtAuth);
         final ImageView imgUser = (ImageView)findViewById(R.id.imgUser);
         final Button btnRefresh = (Button)findViewById(R.id.btnRefresh);
 
@@ -51,19 +53,23 @@ public class UserActivity extends ActionBarActivity {
 
         Firebase.setAndroidContext(this);
 
-        Firebase fireUser = new Firebase("https://libu.firebaseio.com/");
+        final Firebase fireUser = new Firebase("https://libu.firebaseio.com/");
+
+        auth = fireUser.getAuth().getProviderData().get("email").toString();
+        auth = auth.substring(0,auth.indexOf("@"));
 
         fireUser.child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                resID = getResources().getIdentifier("medinabandic", "drawable", getPackageName());
+                resID = getResources().getIdentifier(auth, "drawable", getPackageName());
                 imgUser.setImageResource(resID);
-                name = snapshot.child("medinabandic/name").getValue().toString();
-                id = snapshot.child("medinabandic/id").getValue().toString();
+                name = snapshot.child(auth+"/name").getValue().toString();
+                id = snapshot.child(auth+"/id").getValue().toString();
 
                 txtName.setText(name);
                 txtId.setText(id);
+                txtAuth.setText(auth);
             }
 
             @Override
@@ -79,7 +85,9 @@ public class UserActivity extends ActionBarActivity {
                 dt = "";
 
                 for (DataSnapshot child : snapshot.getChildren()){
-                    dt += "," + child.child("borrowing/medinabandic").getValue();
+                    if(child.child("borrowing/"+auth).getValue() != null){
+                        dt += "," + child.child("borrowing/"+auth).getValue();
+                    }
                 }
 
                 allBooks = dt.split(",");
@@ -89,7 +97,7 @@ public class UserActivity extends ActionBarActivity {
         });
 
         listing();
-        
+
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
