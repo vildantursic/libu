@@ -51,9 +51,9 @@ public class BookDetailsActivity extends ActionBarActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                name = snapshot.child(message).child("name").getValue().toString();
-                rented = snapshot.child(message).child("rented").getValue().toString();
-                year = snapshot.child(message).child("year").getValue().toString();
+                name = snapshot.child(message+"/name").getValue().toString();
+                rented = snapshot.child(message+"/rented").getValue().toString();
+                year = snapshot.child(message+"/year").getValue().toString();
 
 
                 txtBookName.setText(name);

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ public class ListOfBooksActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_books);
 
-        final TextView fireData = (TextView)findViewById(R.id.txtData);
+        final Button btnRefresh = (Button)findViewById(R.id.btnRefresh);
 
         /* Firebase config */
         Firebase.setAndroidContext(this);
@@ -46,9 +47,7 @@ public class ListOfBooksActivity extends ActionBarActivity {
 
         listOfBooks = (ListView)findViewById(R.id.listOfBooks);
 
-        bookAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allBooks);
-
-        listOfBooks.setAdapter(bookAdapter);
+        listing();
 
         libu.child("book").addValueEventListener(new ValueEventListener() {
             @Override
@@ -56,20 +55,19 @@ public class ListOfBooksActivity extends ActionBarActivity {
 
                 allBooks = new String[]{};
                 dt = "";
-
-                for (DataSnapshot child : snapshot.getChildren()){
-                    dt += "," + child.getKey();
-                    allBooks = dt.split(",");
+                int i = 0;
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    dt += child.getKey() + ",";
+                    i++;
                 }
 
-                listOfBooks.invalidateViews();
-
-                fireData.setText(((Integer) allBooks.length).toString());
+                allBooks = dt.split(",");
             }
-            @Override public void onCancelled(FirebaseError error) { }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
         });
-
-
 
         listOfBooks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,8 +86,19 @@ public class ListOfBooksActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listing();
+            }
+        });
     }
 
+    public void listing(){
+        bookAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allBooks);
+        listOfBooks.setAdapter(bookAdapter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
