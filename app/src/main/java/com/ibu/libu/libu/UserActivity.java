@@ -60,7 +60,6 @@ public class UserActivity extends ActionBarActivity {
 
         final TextView txtName = (TextView)findViewById(R.id.txtName);
         final TextView txtId = (TextView)findViewById(R.id.txtId);
-        final TextView txtTesting = (TextView)findViewById(R.id.txtTesting);
         final ImageView imgUser = (ImageView)findViewById(R.id.imgUser);
 
         listOfTakenBooks = (ListView)findViewById(R.id.listOfTakenBooks);
@@ -113,8 +112,6 @@ public class UserActivity extends ActionBarActivity {
 
                 checkingRservation();
                 listing();
-
-                //txtTesting.setText(rentIntArr[1]);
             }
 
             @Override

@@ -28,6 +28,8 @@ public class BookDetailsActivity extends ActionBarActivity {
     String name;
     String rented;
     String year;
+    String isbn;
+    String writer;
 
     int resID;
 
@@ -47,6 +49,7 @@ public class BookDetailsActivity extends ActionBarActivity {
         final TextView txtBookRented = (TextView)findViewById(R.id.txtBookRented);
         final TextView txtBookYear = (TextView)findViewById(R.id.txtBookYear);
         final TextView txtISBN = (TextView)findViewById(R.id.txtISBN);
+        final TextView txtWriter = (TextView)findViewById(R.id.txtWriter);
 
         ImageView imgBookCover = (ImageView)findViewById(R.id.imgBookCover);
 
@@ -74,6 +77,8 @@ public class BookDetailsActivity extends ActionBarActivity {
                 name = snapshot.child(message + "/name").getValue().toString();
                 rented = snapshot.child(message + "/available").getValue().toString();
                 year = snapshot.child(message + "/year").getValue().toString();
+                isbn = snapshot.child(message + "/isbn").getValue().toString();
+                writer = snapshot.child(message + "/writer").getValue().toString();
 
                 rentInt = Integer.parseInt(rented);
 
@@ -89,6 +94,8 @@ public class BookDetailsActivity extends ActionBarActivity {
                 txtBookName.setText(name);
                 txtBookRented.setText(rented);
                 txtBookYear.setText(year);
+                txtISBN.setText(isbn);
+                txtWriter.setText(writer);
 
             }
 
