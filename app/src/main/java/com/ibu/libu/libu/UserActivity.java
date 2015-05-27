@@ -134,7 +134,7 @@ public class UserActivity extends ActionBarActivity {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(dt);
-        cal.add(Calendar.DATE, 1); //minus number would decrement the days
+        cal.add(Calendar.DATE, 5); //minus number would decrement the days
         dt = cal.getTime();
         date = new SimpleDateFormat("yyyy-MM-dd").format(dt);
 

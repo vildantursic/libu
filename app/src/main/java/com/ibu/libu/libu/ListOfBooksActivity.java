@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,10 +23,15 @@ import com.firebase.client.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 public class ListOfBooksActivity extends ActionBarActivity {
 
-    String[] allBooks = {"riot","whitewolf"};
+    String[] allBooks = {"..."};
+    String[] allBooksClone = {"..."};
 
     String dt;
     int i = 0;
@@ -40,8 +46,11 @@ public class ListOfBooksActivity extends ActionBarActivity {
 
         /* Firebase config */
         Firebase.setAndroidContext(this);
-        Firebase libu = new Firebase("https://libu.firebaseio.com/");
+        final Firebase libu = new Firebase("https://libu.firebaseio.com/");
         /**************/
+
+        final Button btnSearch = (Button)findViewById(R.id.btnSearch);
+        final EditText searchField = (EditText)findViewById(R.id.searchField);
 
         listOfBooks = (ListView)findViewById(R.id.listOfBooks);
 
@@ -62,6 +71,9 @@ public class ListOfBooksActivity extends ActionBarActivity {
                 allBooks = dt.split(",");
 
                 listing();
+
+
+                allBooksClone = allBooks;
             }
 
             @Override
@@ -84,6 +96,30 @@ public class ListOfBooksActivity extends ActionBarActivity {
                 intent.putExtras(bookData);
 
                 startActivity(intent);
+            }
+        });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                allBooks = allBooksClone;
+
+                final List<String> list =  new ArrayList<String>();
+                Collections.addAll(list, allBooks);
+
+                String search = searchField.getText().toString();
+
+                for (int i=0; i<allBooks.length; i++)
+                {
+                    if (!allBooks[i].contains(search))
+                    {
+                        list.remove(allBooks[i].toString());
+                    }
+                }
+
+                allBooks = list.toArray(new String[list.size()]);
+                listing();
             }
         });
 
