@@ -16,6 +16,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+
 
 public class BookDetailsActivity extends ActionBarActivity {
 
@@ -27,6 +31,13 @@ public class BookDetailsActivity extends ActionBarActivity {
 
     int resID;
 
+    String auth;
+
+    int rentInt;
+
+    String lendUsers = "";
+    String[] users;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +46,18 @@ public class BookDetailsActivity extends ActionBarActivity {
         final TextView txtBookName = (TextView)findViewById(R.id.txtBookName);
         final TextView txtBookRented = (TextView)findViewById(R.id.txtBookRented);
         final TextView txtBookYear = (TextView)findViewById(R.id.txtBookYear);
+        final TextView txtISBN = (TextView)findViewById(R.id.txtISBN);
+
         ImageView imgBookCover = (ImageView)findViewById(R.id.imgBookCover);
 
         Button btnRent = (Button)findViewById(R.id.btnRent);
 
         Firebase.setAndroidContext(this);
 
-        Firebase libu = new Firebase("https://libu.firebaseio.com/");
+        final Firebase libu = new Firebase("https://libu.firebaseio.com/");
+
+        auth = libu.getAuth().getProviderData().get("email").toString();
+        auth = auth.substring(0,auth.indexOf("@"));
 
         Intent intent = getIntent();
 
@@ -56,9 +72,19 @@ public class BookDetailsActivity extends ActionBarActivity {
             public void onDataChange(DataSnapshot snapshot) {
 
                 name = snapshot.child(message + "/name").getValue().toString();
-                rented = snapshot.child(message + "/rented").getValue().toString();
+                rented = snapshot.child(message + "/available").getValue().toString();
                 year = snapshot.child(message + "/year").getValue().toString();
 
+                rentInt = Integer.parseInt(rented);
+
+                users = new String[]{};
+                lendUsers = "";
+
+                for (DataSnapshot child : snapshot.child(message +"/borrowing").getChildren()) {
+                    lendUsers += child.getKey() + ",";
+                }
+
+                users = lendUsers.split(",");
 
                 txtBookName.setText(name);
                 txtBookRented.setText(rented);
@@ -74,7 +100,22 @@ public class BookDetailsActivity extends ActionBarActivity {
         btnRent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
+                if(rentInt>0 && !Arrays.asList(users).contains(auth)){
+                    rentInt--;
+
+                    libu.child("book/" + message + "/available").setValue(String.valueOf(rentInt));
+
+                    Date dt = new Date();
+                    String date = new SimpleDateFormat("yyyy-MM-dd").format(dt);
+                    libu.child("book/"+message+"/borrowing").child(auth).setValue(date);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "You already reserved this book!",
+                            Toast.LENGTH_LONG).show();
+                }
+
+
             }
         });
 

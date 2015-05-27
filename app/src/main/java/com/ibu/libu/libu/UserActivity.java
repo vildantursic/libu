@@ -20,10 +20,17 @@ import com.firebase.client.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class UserActivity extends ActionBarActivity {
+
+    Firebase fireUser;
+    String date;
 
     String[] allBooks = {"..."};
 
@@ -31,12 +38,20 @@ public class UserActivity extends ActionBarActivity {
     String id;
     String auth;
 
+    String[] bookID;
+
     int resID;
 
     ListAdapter bookAdapter;
     String dt;
+    String dtBooks;
 
     ListView listOfTakenBooks;
+
+    String rentInt;
+    String[] rentIntArr;
+
+    int av;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +67,7 @@ public class UserActivity extends ActionBarActivity {
 
         Firebase.setAndroidContext(this);
 
-        final Firebase fireUser = new Firebase("https://libu.firebaseio.com/");
+        fireUser = new Firebase("https://libu.firebaseio.com/");
 
         auth = fireUser.getAuth().getProviderData().get("email").toString();
         auth = auth.substring(0,auth.indexOf("@"));
@@ -86,24 +101,54 @@ public class UserActivity extends ActionBarActivity {
 
                 for (DataSnapshot child : snapshot.getChildren()) {
                     if (child.child("borrowing/" + auth).getValue() != null) {
-                        dt += "," + child.child("borrowing/" + auth).getValue();
-                        //test = child.child("borowing/" + auth).getParent().toString();
+                        dt += "," + child.child("borrowing/" + auth).getValue() + " / " + child.getKey();
+                        dtBooks += "," + child.getKey();
+                        rentInt += "," + child.child("available").getValue().toString();
                     }
                 }
 
-                txtTesting.setText(test);
-
                 allBooks = dt.split(",");
+                bookID = dtBooks.split(",");
+                rentIntArr = rentInt.split(",");
 
+                checkingRservation();
                 listing();
+
+                //txtTesting.setText(rentIntArr[1]);
             }
 
             @Override
-            public void onCancelled(FirebaseError error) { }
+            public void onCancelled(FirebaseError error) {
+            }
         });
 
         listing();
 
+    }
+
+    public void checkingRservation(){
+
+        Date dt = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        date = new SimpleDateFormat("yyyy-MM-dd").format(dt);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        cal.add(Calendar.DATE, 1); //minus number would decrement the days
+        dt = cal.getTime();
+        date = new SimpleDateFormat("yyyy-MM-dd").format(dt);
+
+        for (int i=0; i < allBooks.length; i++){
+            if(allBooks[i].contains(date)){
+                allBooks[i] = "";
+
+                av = Integer.parseInt(rentIntArr[i]);
+                av++;
+
+                fireUser.child("book/" + bookID[i] + "/available").setValue(String.valueOf(av));
+                fireUser.child("book/"+bookID[i]+"/borrowing").child(auth).removeValue();
+            }
+        }
     }
 
     public void listing(){

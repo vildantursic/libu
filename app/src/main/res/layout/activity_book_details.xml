@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="."
-                    android:id="@+id/textView2" />
+                    android:id="@+id/txtISBN" />
             </LinearLayout>
 
             <LinearLayout
@@ -147,7 +147,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rent"
+        android:text="Reserve"
         android:id="@+id/btnRent"
         android:layout_alignTop="@+id/scrollView"
         android:layout_alignParentRight="true"
