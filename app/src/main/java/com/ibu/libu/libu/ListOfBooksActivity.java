@@ -38,8 +38,6 @@ public class ListOfBooksActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_books);
 
-        final Button btnRefresh = (Button)findViewById(R.id.btnRefresh);
-
         /* Firebase config */
         Firebase.setAndroidContext(this);
         Firebase libu = new Firebase("https://libu.firebaseio.com/");
@@ -62,6 +60,8 @@ public class ListOfBooksActivity extends ActionBarActivity {
                 }
 
                 allBooks = dt.split(",");
+
+                listing();
             }
 
             @Override
@@ -87,12 +87,6 @@ public class ListOfBooksActivity extends ActionBarActivity {
             }
         });
 
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listing();
-            }
-        });
     }
 
     public void listing(){

@@ -17,16 +17,9 @@
 
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="253dp"
+            android:layout_height="match_parent"
             android:id="@+id/listOfBooks"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.74" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Refresh"
-            android:id="@+id/btnRefresh"
             android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 </RelativeLayout>

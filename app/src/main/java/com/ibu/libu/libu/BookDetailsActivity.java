@@ -5,6 +5,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +37,8 @@ public class BookDetailsActivity extends ActionBarActivity {
         final TextView txtBookYear = (TextView)findViewById(R.id.txtBookYear);
         ImageView imgBookCover = (ImageView)findViewById(R.id.imgBookCover);
 
+        Button btnRent = (Button)findViewById(R.id.btnRent);
+
         Firebase.setAndroidContext(this);
 
         Firebase libu = new Firebase("https://libu.firebaseio.com/");
@@ -51,9 +55,9 @@ public class BookDetailsActivity extends ActionBarActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                name = snapshot.child(message+"/name").getValue().toString();
-                rented = snapshot.child(message+"/rented").getValue().toString();
-                year = snapshot.child(message+"/year").getValue().toString();
+                name = snapshot.child(message + "/name").getValue().toString();
+                rented = snapshot.child(message + "/rented").getValue().toString();
+                year = snapshot.child(message + "/year").getValue().toString();
 
 
                 txtBookName.setText(name);
@@ -61,7 +65,17 @@ public class BookDetailsActivity extends ActionBarActivity {
                 txtBookYear.setText(year);
 
             }
-            @Override public void onCancelled(FirebaseError error) { }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });
+
+        btnRent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
         });
 
         // 4. get bundle from intent

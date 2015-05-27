@@ -20,7 +20,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/inputPass"
-            android:hint="Password" />
+            android:hint="Password"
+            android:password="true" />
 
         <Button
             android:layout_width="wrap_content"

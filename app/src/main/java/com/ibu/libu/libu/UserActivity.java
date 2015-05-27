@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class UserActivity extends ActionBarActivity {
 
-    String[] allBooks = {"riot","whitewolf"};
+    String[] allBooks = {"..."};
 
     String name;
     String id;
@@ -45,9 +45,8 @@ public class UserActivity extends ActionBarActivity {
 
         final TextView txtName = (TextView)findViewById(R.id.txtName);
         final TextView txtId = (TextView)findViewById(R.id.txtId);
-        final TextView txtAuth = (TextView)findViewById(R.id.txtAuth);
+        final TextView txtTesting = (TextView)findViewById(R.id.txtTesting);
         final ImageView imgUser = (ImageView)findViewById(R.id.imgUser);
-        final Button btnRefresh = (Button)findViewById(R.id.btnRefresh);
 
         listOfTakenBooks = (ListView)findViewById(R.id.listOfTakenBooks);
 
@@ -69,7 +68,6 @@ public class UserActivity extends ActionBarActivity {
 
                 txtName.setText(name);
                 txtId.setText(id);
-                txtAuth.setText(auth);
             }
 
             @Override
@@ -84,26 +82,28 @@ public class UserActivity extends ActionBarActivity {
                 allBooks = new String[]{};
                 dt = "";
 
-                for (DataSnapshot child : snapshot.getChildren()){
-                    if(child.child("borrowing/"+auth).getValue() != null){
-                        dt += "," + child.child("borrowing/"+auth).getValue();
+                String test = "";
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (child.child("borrowing/" + auth).getValue() != null) {
+                        dt += "," + child.child("borrowing/" + auth).getValue();
+                        //test = child.child("borowing/" + auth).getParent().toString();
                     }
                 }
 
+                txtTesting.setText(test);
+
                 allBooks = dt.split(",");
-               // if (new SimpleDateFormat("MM/yyyy").parse(date).before(new Date())) {}
+
+                listing();
             }
-            @Override public void onCancelled(FirebaseError error) { }
+
+            @Override
+            public void onCancelled(FirebaseError error) { }
         });
 
         listing();
 
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listing();
-            }
-        });
     }
 
     public void listing(){
